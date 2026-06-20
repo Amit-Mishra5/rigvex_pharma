@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      alert('This is a dummy form — connect it to an email service or backend to receive real messages.');
+    //  alert('This is a dummy form — connect it to an email service or backend to receive real messages.');
+    alert('Thank you for reaching out to us!');
     });
   }
 });
