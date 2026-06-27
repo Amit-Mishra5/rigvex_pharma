@@ -1141,4 +1141,27 @@ textarea {
     .footer-links {
         justify-content: center;
     }
+
+    /* Animate on scroll base state */
+    [data-aos] {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+    }
+
+        /* When visible */
+        [data-aos].aos-animate {
+            opacity: 1;
+            transform: none;
+        }
+
+    /* Fade right/left support */
+    [data-aos="fade-right"] {
+        transform: translateX(-40px);
+    }
+
+    [data-aos="fade-left"] {
+        transform: translateX(40px);
+    }
+
 }

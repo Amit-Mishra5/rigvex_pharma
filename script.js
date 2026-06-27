@@ -39,3 +39,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+
+// Animate on scroll (AOS replacement)
+function initAOS() {
+    var elements = document.querySelectorAll('[data-aos]');
+    var observer = new window.IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                // Handle delay
+                var delay = el.getAttribute('data-aos-delay');
+                if (delay) {
+                    setTimeout(function () {
+                        el.classList.add('aos-animate');
+                    }, parseInt(delay, 10));
+                } else {
+                    el.classList.add('aos-animate');
+                }
+                observer.unobserve(el);
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+
+    elements.forEach(function (el) {
+        observer.observe(el);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initAOS();
+    // ...your other JS code...
+});
