@@ -1,13 +1,24 @@
-// Rigvex Pharma — site interactions
+// Rigvex Pharma — Multi-Specialty Site Interactions
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Init AOS scroll animations
-    if (typeof AOS !== 'undefined') {
-        AOS.init({ once: true, offset: 60, duration: 750 });
+    // ── Reveal on scroll (Intersection Observer, no CDN needed) ──
+    var reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { observer.observe(el); });
+    } else {
+        reveals.forEach(function (el) { el.classList.add('visible'); });
     }
 
-    // Nav shadow on scroll
+    // ── Nav shadow on scroll ──
     var nav = document.getElementById('siteNav');
     if (nav) {
         window.addEventListener('scroll', function () {
@@ -15,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, { passive: true });
     }
 
-    // Mobile hamburger
+    // ── Mobile hamburger ──
     var hamburger = document.getElementById('hamburger');
     var mainNav = document.getElementById('mainNav');
     if (hamburger && mainNav) {
@@ -29,7 +40,58 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Contact form placeholder
+    // ── Product filter tabs ──
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var productCards = document.querySelectorAll('#productGrid .product-card');
+
+    filterBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            // Update active button
+            filterBtns.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+
+            var filter = btn.getAttribute('data-filter');
+
+            productCards.forEach(function (card) {
+                if (filter === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    var specialties = (card.getAttribute('data-specialty') || '');
+                    if (specialties.split(' ').indexOf(filter) !== -1) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+
+    // ── Specialty cards click to filter products ──
+    var specialtyCards = document.querySelectorAll('.specialty-card');
+    specialtyCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            var filter = card.getAttribute('data-filter');
+            // Scroll to products
+            var productsSection = document.getElementById('products');
+            if (productsSection) {
+                productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Activate the correct filter button
+            setTimeout(function () {
+                filterBtns.forEach(function (btn) {
+                    if (btn.getAttribute('data-filter') === filter) {
+                        btn.click();
+                    }
+                });
+                // Update active specialty card
+                specialtyCards.forEach(function (sc) { sc.classList.remove('active'); });
+                card.classList.add('active');
+            }, 400);
+        });
+    });
+
+    // ── Contact form placeholder ──
     var form = document.querySelector('.contact-form');
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -38,37 +100,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-});
-
-// Animate on scroll (AOS replacement)
-function initAOS() {
-    var elements = document.querySelectorAll('[data-aos]');
-    var observer = new window.IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-                var el = entry.target;
-                // Handle delay
-                var delay = el.getAttribute('data-aos-delay');
-                if (delay) {
-                    setTimeout(function () {
-                        el.classList.add('aos-animate');
-                    }, parseInt(delay, 10));
-                } else {
-                    el.classList.add('aos-animate');
-                }
-                observer.unobserve(el);
-            }
-        });
-    }, {
-        threshold: 0.15
-    });
-
-    elements.forEach(function (el) {
-        observer.observe(el);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    initAOS();
-    // ...your other JS code...
 });
